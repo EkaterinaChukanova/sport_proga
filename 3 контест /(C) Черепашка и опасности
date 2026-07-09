@@ -1,0 +1,46 @@
+#include <cstdio>
+
+const int MOD = 1000000007;
+int dp[1005][1005];
+bool bad[1005][1005];
+
+int main() {
+    int n, m, k;
+    scanf("%d %d %d", &n, &m, &k);
+
+    for (int i = 0; i < k; i++) {
+        int x, y;
+        scanf("%d %d", &x, &y);
+        bad[x][y] = true;
+    }
+
+    if (!bad[0][0]) {
+        dp[0][0] = 1;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (!bad[i][0]) {
+            dp[i][0] = dp[i - 1][0];
+        }
+    }
+
+    for (int j = 1; j <= m; j++) {
+        if (!bad[0][j]) {
+            dp[0][j] = dp[0][j - 1];
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (!bad[i][j]) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                if (dp[i][j] >= MOD) {
+                    dp[i][j] -= MOD;
+                }
+            }
+        }
+    }
+
+    printf("%d\n", dp[n][m]);
+    return 0;
+}
