@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int N, M;
+    cin >> N >> M;
+    
+    vector<vector<int>> a(N + 1, vector<int>(M + 1, 0));
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            cin >> a[i][j];
+        }
+    }
+    
+    vector<vector<int>> dp(N + 1, vector<int>(M + 1, 0));
+    dp[1][1] = a[1][1];
+    
+    for (int sum = 2; sum <= N + M; sum++) {
+        for (int i = 1; i <= N; i++) {
+            int j = sum - i;
+            if (j < 1 || j > M) continue;
+            if (i == 1 && j == 1) continue;
+            
+            int best = 0;
+            
+            if (i - 2 >= 1 && j + 1 <= M) {
+                best = max(best, dp[i - 2][j + 1]);
+            }
+            
+            if (i - 2 >= 1 && j - 1 >= 1) {
+                best = max(best, dp[i - 2][j - 1]);
+            }
+            
+            if (i - 1 >= 1 && j - 2 >= 1) {
+                best = max(best, dp[i - 1][j - 2]);
+            }
+            
+            if (i + 1 <= N && j - 2 >= 1) {
+                best = max(best, dp[i + 1][j - 2]);
+            }
+            
+            if (best > 0) {
+                dp[i][j] = best + a[i][j];
+            }
+        }
+    }
+    
+    int ans = 0;
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            ans = max(ans, dp[i][j]);
+        }
+    }
+    
+    cout << ans << endl;
+    
+    return 0;
+}
