@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MOD = 1000000007;
+
+bool hasCommonDigit(int a, int b) {
+    bool digits[10] = {false};
+    while (a > 0) {
+        digits[a % 10] = true;
+        a /= 10;
+    }
+    while (b > 0) {
+        if (digits[b % 10]) return true;
+        b /= 10;
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n, k;
+    cin >> n >> k;
+
+    vector<vector<int>> compatible(k + 1, vector<int>(k + 1, 0));
+    for (int i = 1; i <= k; i++) {
+        for (int j = 1; j <= k; j++) {
+            if (!hasCommonDigit(i, j)) {
+                compatible[i][j] = 1;
+            }
+        }
+    }
+
+    vector<vector<long long>> dp(n + 1, vector<long long>(k + 1, 0));
+    for (int i = 1; i <= k; i++) {
+        dp[1][i] = 1;
+    }
+
+    for (int len = 2; len <= n; len++) {
+        for (int last = 1; last <= k; last++) {
+            long long sum = 0;
+            for (int prev = 1; prev <= k; prev++) {
+                if (compatible[prev][last]) {
+                    sum += dp[len - 1][prev];
+                    if (sum >= MOD) sum -= MOD;
+                }
+            }
+            dp[len][last] = sum;
+        }
+    }
+
+    long long ans = 0;
+    for (int i = 1; i <= k; i++) {
+        ans += dp[n][i];
+        if (ans >= MOD) ans -= MOD;
+    }
+
+    cout << ans << '\n';
+    return 0;
+}
