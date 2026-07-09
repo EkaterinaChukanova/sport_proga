@@ -1,0 +1,31 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    
+    vector<string> suffixes;
+    
+    for (int i = 0; i < n; i++) {
+        suffixes.push_back(s.substr(i));
+    }
+    sort(suffixes.begin(), suffixes.end());
+    long long total = 1LL * n * (n + 1) / 2;
+    long long repeat = 0;
+    for (int i = 1; i < n; i++) {
+        int lcp = 0;
+        while (lcp < suffixes[i-1].size() && lcp < suffixes[i].size() && 
+               suffixes[i-1][lcp] == suffixes[i][lcp]) {
+            lcp++;
+        }
+        repeat += lcp;
+    }
+    
+    cout << total - repeat << endl;
+    return 0;
+}
