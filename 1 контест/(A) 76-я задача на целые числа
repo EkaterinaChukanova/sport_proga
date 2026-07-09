@@ -1,0 +1,16 @@
+#include <iostream>
+
+int main() {
+    int t;
+    std::cin >> t;
+    for (int i = 0; i < t; i++) {
+        int x;
+        std::cin >> x;
+        
+        int y = x + 1;
+        if (y > 67) y = 67;
+        
+        std::cout << y << std::endl;
+    }
+    return 0;
+}
