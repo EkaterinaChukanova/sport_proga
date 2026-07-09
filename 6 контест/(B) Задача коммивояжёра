@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int INF = 1e9;
+
+int main() {
+    int n;
+    cin >> n;
+    
+    vector<vector<int>> c(n, vector<int>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> c[i][j];
+        }
+    }
+    
+    vector<vector<int>> dp(1 << n, vector<int>(n, INF));
+    dp[1][0] = 0;
+    for (int mask = 0; mask < (1 << n); mask++) {
+        for (int last = 0; last < n; last++) {
+            int cur = dp[mask][last];
+            if (cur == INF) continue;
+            
+            for (int next = 0; next < n; next++) {
+                if (mask & (1 << next)) continue;
+                int &ref = dp[mask | (1 << next)][next];
+                int new_cost = cur + c[last][next];
+                if (new_cost < ref) ref = new_cost;
+            }
+        }
+    }
+    
+    int ans = INF;
+    for (int last = 0; last < n; last++) {
+        ans = min(ans, dp[(1 << n) - 1][last] + c[last][0]);
+    }
+    
+    cout << ans << endl;
+    return 0;
+}
