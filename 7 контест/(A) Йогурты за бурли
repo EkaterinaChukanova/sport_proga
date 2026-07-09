@@ -1,0 +1,18 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n, a, b;
+        cin >> n >> a >> b;
+        long long ans = n * a;
+        long long pair = n / 2;
+        long long ost = n % 2;
+        ans = min(ans, pair * b + ost * a);
+        cout << ans << endl;
+    }
+    return 0;
+}
