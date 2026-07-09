@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000007;
+const int MAXN = 2000005;
+long long dp[MAXN];
+
+int main() {
+    int l, r;
+    cin >> l >> r;
+    dp[1] = 1;
+
+    for (int i = 1; i <= r; i++) {
+        if (dp[i] == 0) continue;
+
+        for (int j = 2 * i; j <= r; j += i) {
+            dp[j] = (dp[j] + dp[i]) % MOD;
+        }
+    }
+
+    long long answer = 0;
+    for (int i = l; i <= r; i++) {
+        answer = (answer + dp[i]) % MOD;
+    }
+
+    cout << answer << endl;
+    return 0;
+}
