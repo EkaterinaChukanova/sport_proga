@@ -1,0 +1,53 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    
+    string ans = "";
+    long long best = 0;
+    
+    for (int i = 0; i < n; i++) {
+        vector<int> cnt(n - i + 1, 0);
+        string sub = s.substr(i);
+        vector<int> z(sub.size());
+        int l = 0, r = 0;
+        for (int j = 1; j < sub.size(); j++) {
+            if (j <= r) {
+                z[j] = min(r - j + 1, z[j - l]);
+            }
+            while (j + z[j] < sub.size() && sub[z[j]] == sub[j + z[j]]) {
+                z[j]++;
+            }
+            if (j + z[j] - 1 > r) {
+                l = j;
+                r = j + z[j] - 1;
+            }
+        }
+        
+        for (int j = 0; j < sub.size(); j++) {
+            cnt[z[j]]++;
+        }
+        for (int len = sub.size() - 1; len >= 1; len--) {
+            cnt[len] += cnt[len + 1];
+        }
+        
+        for (int len = 1; len <= sub.size(); len++) {
+            int k = cnt[len] + 1;
+            long long val = 1LL * len * k;
+            string cur = sub.substr(0, len);
+            if (val > best || (val == best && cur < ans)) {
+                best = val;
+                ans = cur;
+            }
+        }
+    }
+    
+    cout << ans << endl;
+    
+    return 0;
+}
