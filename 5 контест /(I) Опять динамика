@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const long long INF = 4e18;
+
+int main() {
+    int N;
+    long long W;
+    cin >> N >> W;
+    
+    vector<long long> w(N);
+    vector<int> c(N);
+    
+    int max_c = 0;
+    for (int i = 0; i < N; i++) {
+        cin >> w[i] >> c[i];
+        max_c += c[i];
+    }
+    
+    vector<long long> dp(max_c + 1, INF);
+    dp[0] = 0;
+    
+    for (int i = 0; i < N; i++) {
+        for (int cost = max_c; cost >= c[i]; cost--) {
+            if (dp[cost - c[i]] != INF) {
+                dp[cost] = min(dp[cost], dp[cost - c[i]] + w[i]);
+            }
+        }
+    }
+    
+    int ans = 0;
+    for (int cost = max_c; cost >= 0; cost--) {
+        if (dp[cost] <= W) {
+            ans = cost;
+            break;
+        }
+    }
+    
+    cout << ans << endl;
+    
+    return 0;
+}
