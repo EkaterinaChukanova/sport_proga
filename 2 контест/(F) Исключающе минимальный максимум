@@ -1,0 +1,92 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int MAX_BIT = 30;
+
+struct TrieNode {
+    TrieNode* child[2];
+    int cnt;
+    TrieNode() {
+        child[0] = child[1] = nullptr;
+        cnt = 0;
+    }
+};
+
+void insert(TrieNode* root, int x) {
+    TrieNode* cur = root;
+    for (int i = MAX_BIT; i >= 0; i--) {
+        int bit = (x >> i) & 1;
+        if (!cur->child[bit]) {
+            cur->child[bit] = new TrieNode();
+        }
+        cur = cur->child[bit];
+        cur->cnt++;
+    }
+}
+
+int getMinXor(TrieNode* root, int x) {
+    TrieNode* cur = root;
+    int res = 0;
+    for (int i = MAX_BIT; i >= 0; i--) {
+        int bit = (x >> i) & 1;
+        if (cur->child[bit] && cur->child[bit]->cnt > 0) {
+            cur = cur->child[bit];
+        } else {
+            cur = cur->child[bit ^ 1];
+            res |= (1 << i);
+        }
+    }
+    return res;
+}
+
+int getMaxXor(TrieNode* root, int x) {
+    TrieNode* cur = root;
+    int res = 0;
+    for (int i = MAX_BIT; i >= 0; i--) {
+        int bit = (x >> i) & 1;
+        if (cur->child[bit ^ 1] && cur->child[bit ^ 1]->cnt > 0) {
+            cur = cur->child[bit ^ 1];
+            res |= (1 << i);
+        } else {
+            cur = cur->child[bit];
+        }
+    }
+    return res;
+}
+
+void remove(TrieNode* root, int x) {
+    TrieNode* cur = root;
+    for (int i = MAX_BIT; i >= 0; i--) {
+        int bit = (x >> i) & 1;
+        cur = cur->child[bit];
+        cur->cnt--;
+    }
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<int> a(n);
+    TrieNode* root = new TrieNode();
+
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        insert(root, a[i]);
+    }
+
+    for (int i = 0; i < n; i++) {
+        remove(root, a[i]);
+
+        int mn = getMinXor(root, a[i]);
+        int mx = getMaxXor(root, a[i]);
+
+        cout << mn << ' ' << mx << '\n';
+
+        insert(root, a[i]);
+    }
+
+    return 0;
+}
