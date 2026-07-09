@@ -1,0 +1,78 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void solve() {
+    int n, x;
+    cin >> n >> x;
+    
+    vector<int> divs;
+    for (int i = 1; i * i <= x; i++) {
+        if (x % i == 0) {
+            divs.push_back(i);
+            if (i != x / i) divs.push_back(x / i);
+        }
+    }
+    sort(divs.begin(), divs.end());
+    
+    vector<bool> dp(divs.size(), false);
+    int ans = 0;
+    
+    for (int i = 0; i < n; i++) {
+        int val;
+        cin >> val;
+        
+        vector<int> new_states;
+        
+        if (x % val == 0) {
+            auto it = lower_bound(divs.begin(), divs.end(), val);
+            if (it != divs.end() && *it == val) {
+                new_states.push_back(it - divs.begin());
+            }
+        }
+        
+        for (int j = 0; j < divs.size(); j++) {
+            if (!dp[j]) continue;
+            long long prod = 1LL * divs[j] * val;
+            if (prod > x) continue;
+            if (x % prod == 0) {
+                auto it = lower_bound(divs.begin(), divs.end(), (int)prod);
+                if (it != divs.end() && *it == prod) {
+                    new_states.push_back(it - divs.begin());
+                }
+            }
+        }
+        
+        bool bad = false;
+        for (int idx : new_states) {
+            dp[idx] = true;
+            if (divs[idx] == x) bad = true;
+        }
+        
+        if (bad) {
+            ans++;
+            fill(dp.begin(), dp.end(), false);
+            if (x % val == 0) {
+                auto it = lower_bound(divs.begin(), divs.end(), val);
+                if (it != divs.end() && *it == val) {
+                    dp[it - divs.begin()] = true;
+                }
+            }
+        }
+    }
+    
+    cout << ans + 1 << '\n';
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
+}
