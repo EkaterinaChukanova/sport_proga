@@ -1,0 +1,39 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int T;
+    cin >> T;
+    
+    while (T--) {
+        int n, m;
+        cin >> n >> m;
+        
+        vector<vector<int>> c(n + 1, vector<int>(m + 1, 0));
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                cin >> c[i][j];
+            }
+        }
+        
+        vector<int> dp(m + 1, 0);
+        for (int i = 1; i <= n; i++) {
+            vector<int> new_dp = dp;
+            
+            for (int j = 1; j <= m; j++) {
+                for (int x = 1; x <= j; x++) {
+                    new_dp[j] = max(new_dp[j], dp[j - x] + c[i][x]);
+                }
+            }
+            
+            dp = new_dp;
+        }
+        
+        cout << dp[m] << '\n';
+    }
+    
+    return 0;
+}
