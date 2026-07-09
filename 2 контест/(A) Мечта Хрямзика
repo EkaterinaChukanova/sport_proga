@@ -1,0 +1,25 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name, name_fake;
+    cin >> name >> name_fake;
+    int n = name.length();
+    
+    if (name == name_fake) {
+        cout << 0;
+        return 0;
+    }
+    
+    string doubled = name + name;
+    size_t pos = doubled.find(name_fake);
+    
+    if (pos != string::npos && pos > 0 && pos < n) {
+        cout << n - pos;
+    } else {
+        cout << -1;
+    }
+    
+    return 0;
+}
