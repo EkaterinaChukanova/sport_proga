@@ -1,0 +1,53 @@
+#include <iostream>
+using namespace std;
+
+const int MOD = 1000000007;
+long long dp[105][1005];
+
+int main() {
+    dp[0][0] = 1;
+
+    for (int len = 1; len <= 100; len++) {
+        for (int sum = 0; sum <= 1000; sum++) {
+            for (int digit = 0; digit <= 9; digit++) {
+                if (sum >= digit) {
+                    dp[len][sum] += dp[len - 1][sum - digit];
+                    dp[len][sum] %= MOD;
+                }
+            }
+        }
+    }
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int N, S;
+        cin >> N >> S;
+
+        if (S == 0) {
+            cout << 1 << '\n';
+            continue;
+        }
+
+        if (S > 9 * N) {
+            cout << 0 << '\n';
+            continue;
+        }
+
+        long long ans = 0;
+
+        for (int len = 1; len <= N; len++) {
+            for (int first = 1; first <= 9; first++) {
+                if (S >= first) {
+                    ans += dp[len - 1][S - first];
+                    ans %= MOD;
+                }
+            }
+        }
+
+        cout << ans << '\n';
+    }
+
+    return 0;
+}
