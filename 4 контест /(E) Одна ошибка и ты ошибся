@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        string s = to_string(n);
+        int d = (int)s.size();
+
+        vector<pair<int, int>> ans;
+
+        for (int a = 1; a <= 10000; a++) {
+            for (int len = 1; len <= 6; len++) {
+                int b = d * a - len;
+
+                if (b < 1) continue;
+                if (b > min(10000, n * a)) continue;
+
+                int x = n * a - b;
+                if (x <= 0) continue;
+
+                string want = to_string(x);
+                if ((int)want.size() != len) continue;
+
+                string got;
+                got.reserve(len);
+
+                for (int i = 0; (int)got.size() < len; i++) {
+                    got += s[i % d];
+                }
+
+                got.resize(len);
+
+                if (got == want) {
+                    ans.push_back({a, b});
+                }
+            }
+        }
+
+        cout << ans.size() << '\n';
+        for (auto &[a, b] : ans) {
+            cout << a << ' ' << b << '\n';
+        }
+    }
+
+    return 0;
+}
