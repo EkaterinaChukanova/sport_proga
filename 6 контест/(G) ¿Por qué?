@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstring>
+
+using namespace std;
+
+const int MOD = 998244353;
+
+int dp[1 << 9][2]; 
+int n, m;
+vector<string> grid;
+
+void solve(int col, int cur_mask, int next_mask, int row) {
+    if (col == m) {
+        dp[next_mask][(row + 1) % 2] = (dp[next_mask][(row + 1) % 2] + dp[cur_mask][row % 2]) % MOD;
+        return;
+    }
+
+    if (grid[row][col] == '#' || (cur_mask & (1 << col))) {
+        solve(col + 1, cur_mask, next_mask, row);
+        return;
+    }
+
+    if (row + 1 < n && grid[row + 1][col] == '.') {
+        solve(col + 1, cur_mask, next_mask | (1 << col), row);
+    }
+
+    if (col + 1 < m && grid[row][col + 1] == '.' && !(cur_mask & (1 << (col + 1)))) {
+        solve(col + 2, cur_mask, next_mask, row); 
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    vector<string> temp(n);
+    for (int i = 0; i < n; i++) {
+        cin >> temp[i];
+    }
+
+    if (m > n) {
+        grid.resize(m, string(n, '.'));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                grid[j][i] = temp[i][j];
+            }
+        }
+        swap(n, m);
+    } else {
+        grid = temp;
+    }
+    memset(dp, 0, sizeof(dp));
+    dp[0][0] = 1;
+
+    for (int row = 0; row < n; row++) {
+        for (int mask = 0; mask < (1 << m); mask++) {
+            dp[mask][(row + 1) % 2] = 0;
+        }
+
+        for (int mask = 0; mask < (1 << m); mask++) {
+            if (dp[mask][row % 2] == 0) continue;
+            solve(0, mask, 0, row);
+        }
+    }
+
+    cout << dp[0][n % 2] << endl;
+
+    return 0;
+}
